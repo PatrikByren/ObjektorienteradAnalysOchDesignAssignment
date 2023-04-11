@@ -1,12 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ObjektorienteradAnalysOchDesignAssignment.Models.Abstracts;
 
 namespace ObjektorienteradAnalysOchDesignAssignment.Models.Entity
 {
     [Index(nameof(Name), IsUnique = true)]
-    public class ContentTypeEntity
+    public class ContentTypeEntity : BaseMargeTableToArticle
     {
-        public int Id { get; set; }
-        public string Name { get; set; } = null!;
-        public ICollection<ArticleEntity>? Articles { get; set; }
     }
 }

@@ -1,9 +1,8 @@
-﻿namespace ObjektorienteradAnalysOchDesignAssignment.Models.Entity
+﻿using ObjektorienteradAnalysOchDesignAssignment.Models.Abstracts;
+
+namespace ObjektorienteradAnalysOchDesignAssignment.Models.Entity
 {
-    public class TagEntity
+    public class TagEntity : BaseMargeTableToArticle
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public ICollection<ArticleEntity> Articles { get; set; }
     }
 }

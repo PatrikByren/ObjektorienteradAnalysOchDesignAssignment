@@ -31,7 +31,7 @@ public class ArticleService
         var res = await _articleRepo.SaveAsync(req);
         res.Tag = await _tagRepo.GetOneAsync(req.TagId);
         res.ContentType = await _contentTypeRepo.GetOneAsync(req.ContentTypeId);
-        _authorArticleRowRepo.Save(res, req);
+        await _authorArticleRowRepo.SaveAsync(res, req);
         res.AuthorRow = await _authorRepo.GetOneAsync(req);
 
         return res;
@@ -45,7 +45,6 @@ public class ArticleService
 
             article.Title = articleToUpdate.Title;
             article.Content = articleToUpdate.Content;
-            article.PublishDate = articleToUpdate.PublishDate;
             article.ContentTypeId = articleToUpdate.ContentTypeId;
             article.TagId = articleToUpdate.TagId;
 

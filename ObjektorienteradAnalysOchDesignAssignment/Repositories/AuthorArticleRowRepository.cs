@@ -18,18 +18,21 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Repositories
             _dataContext = dataContext;
         }
 
-        public ArticleEntity Save(ArticleEntity entity, ArticleRequest req)
+        public async Task<ArticleEntity> SaveAsync(ArticleEntity entity, ArticleRequest req)
         {
             try
             {
+                var row = AuthorArticleRowFactory.CreateAuthorArticleRowEntity();
+                
                 foreach (var item in req.Authors)
                 {
-                    var row = AuthorArticleRowFactory.CreateAuthorArticleRowEntity();
-                    row.AuthorId = item.id;
+                    
+                    row.AuthorId = item.Id;
                     row.ArticleId = entity.Id;
                     _dataContext.AuthorArticleRow.Add(row); 
+                    await _dataContext.SaveChangesAsync();
+                    entity.AuthorRow.Add(row);
                 }
-                //await _dataContext.SaveChangesAsync();
                 return entity;
             }
             catch { }
@@ -48,7 +51,7 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Repositories
                 foreach (var authorModel in model)
                 {
                     var row = AuthorArticleRowFactory.CreateAuthorArticleRowEntity();
-                    row.AuthorId = authorModel.id;
+                    row.AuthorId = authorModel.Id;
                     row.ArticleId = entity.Id;
                     _dataContext.AuthorArticleRow.Add(row);
                 }

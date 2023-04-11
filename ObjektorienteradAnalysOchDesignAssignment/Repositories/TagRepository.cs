@@ -15,7 +15,7 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Repositories
 
         public async Task<TagEntity> GetOneAsync(int Id)
         {
-            return await _dataContext.Tags.FirstOrDefaultAsync(x => x.Id == Id);
+            return await _dataContext.Tags.FirstOrDefaultAsync(x => x.Id == Id) ?? null!; ;
         }
     }
 }

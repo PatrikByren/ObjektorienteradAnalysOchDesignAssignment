@@ -24,7 +24,7 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Repositories
             foreach (var item in req.Authors)
             {
                 var resp = AuthorArticleRowFactory.CreateAuthorArticleRowEntity();
-                var data = await _dataContext.Author.FirstOrDefaultAsync(x => x.Id == item.id);
+                var data = await _dataContext.Author.FirstOrDefaultAsync(x => x.Id == item.Id);
                 resp.Author = data!;   
                 list.Add(resp);
                 

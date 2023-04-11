@@ -12,8 +12,8 @@ using ObjektorienteradAnalysOchDesignAssignment.Context;
 namespace ObjektorienteradAnalysOchDesignAssignment.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230409140431_Fixed misstakeAgain")]
-    partial class FixedmisstakeAgain
+    [Migration("20230411082405_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,14 +36,14 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Migrations
                     b.Property<int>("ArticleId")
                         .HasColumnType("int");
 
-                    b.Property<int>("AuthorID")
+                    b.Property<int>("AuthorId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ArticleId");
 
-                    b.HasIndex("AuthorID");
+                    b.HasIndex("AuthorId");
 
                     b.ToTable("AuthorArticleRow");
                 });
@@ -56,6 +56,9 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("AuthorEntityId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -66,7 +69,7 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Migrations
                     b.Property<DateTime>("PublishDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("TagId")
+                    b.Property<int?>("TagId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -74,6 +77,8 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AuthorEntityId");
 
                     b.HasIndex("ContentTypeId");
 
@@ -109,9 +114,12 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("ContentType");
                 });
@@ -136,14 +144,14 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Migrations
             modelBuilder.Entity("ObjektorienteradAnalysOchDesignAssignment.Models.Entities.AuthorArticleRowEntity", b =>
                 {
                     b.HasOne("ObjektorienteradAnalysOchDesignAssignment.Models.Entity.ArticleEntity", "Article")
-                        .WithMany("Author")
+                        .WithMany("AuthorRow")
                         .HasForeignKey("ArticleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ObjektorienteradAnalysOchDesignAssignment.Models.Entity.AuthorEntity", "Author")
-                        .WithMany("Articles")
-                        .HasForeignKey("AuthorID")
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -154,6 +162,10 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Migrations
 
             modelBuilder.Entity("ObjektorienteradAnalysOchDesignAssignment.Models.Entity.ArticleEntity", b =>
                 {
+                    b.HasOne("ObjektorienteradAnalysOchDesignAssignment.Models.Entity.AuthorEntity", null)
+                        .WithMany("Articles")
+                        .HasForeignKey("AuthorEntityId");
+
                     b.HasOne("ObjektorienteradAnalysOchDesignAssignment.Models.Entity.ContentTypeEntity", "ContentType")
                         .WithMany("Articles")
                         .HasForeignKey("ContentTypeId")
@@ -162,9 +174,7 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Migrations
 
                     b.HasOne("ObjektorienteradAnalysOchDesignAssignment.Models.Entity.TagEntity", "Tag")
                         .WithMany("Articles")
-                        .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TagId");
 
                     b.Navigation("ContentType");
 
@@ -173,7 +183,7 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Migrations
 
             modelBuilder.Entity("ObjektorienteradAnalysOchDesignAssignment.Models.Entity.ArticleEntity", b =>
                 {
-                    b.Navigation("Author");
+                    b.Navigation("AuthorRow");
                 });
 
             modelBuilder.Entity("ObjektorienteradAnalysOchDesignAssignment.Models.Entity.AuthorEntity", b =>

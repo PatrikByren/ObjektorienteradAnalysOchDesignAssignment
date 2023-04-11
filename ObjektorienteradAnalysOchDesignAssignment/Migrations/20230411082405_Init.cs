@@ -17,8 +17,7 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -31,7 +30,7 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -57,16 +56,21 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PublishDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ContentTypeId = table.Column<int>(type: "int", nullable: false),
-                    AuthorArticleRowId = table.Column<int>(type: "int", nullable: false),
-                    TagId = table.Column<int>(type: "int", nullable: false)
+                    TagId = table.Column<int>(type: "int", nullable: true),
+                    AuthorEntityId = table.Column<int>(type: "int", nullable: true),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Articles", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Articles_Author_AuthorEntityId",
+                        column: x => x.AuthorEntityId,
+                        principalTable: "Author",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Articles_ContentType_ContentTypeId",
                         column: x => x.ContentTypeId,
@@ -77,8 +81,7 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Migrations
                         name: "FK_Articles_Tags_TagId",
                         column: x => x.TagId,
                         principalTable: "Tags",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -87,7 +90,7 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AuthorID = table.Column<int>(type: "int", nullable: false),
+                    AuthorId = table.Column<int>(type: "int", nullable: false),
                     ArticleId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -100,12 +103,17 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AuthorArticleRow_Author_AuthorID",
-                        column: x => x.AuthorID,
+                        name: "FK_AuthorArticleRow_Author_AuthorId",
+                        column: x => x.AuthorId,
                         principalTable: "Author",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Articles_AuthorEntityId",
+                table: "Articles",
+                column: "AuthorEntityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Articles_ContentTypeId",
@@ -123,9 +131,15 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Migrations
                 column: "ArticleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AuthorArticleRow_AuthorID",
+                name: "IX_AuthorArticleRow_AuthorId",
                 table: "AuthorArticleRow",
-                column: "AuthorID");
+                column: "AuthorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ContentType_Name",
+                table: "ContentType",
+                column: "Name",
+                unique: true);
         }
 
         /// <inheritdoc />

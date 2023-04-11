@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace ObjektorienteradAnalysOchDesignAssignment.Factories
+namespace ObjektorienteradAnalysOchDesignAssignment.Factories;
+
+public class StatusFactory
 {
-    public class StatusFactory
-    {
-        public static OkResult CreateOkResult() => new OkResult();
-    }
+    public static OkResult CreateOkResult() => new OkResult();
 }

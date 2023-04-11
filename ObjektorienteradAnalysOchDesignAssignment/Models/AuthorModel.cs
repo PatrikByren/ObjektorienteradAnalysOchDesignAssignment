@@ -1,7 +1,9 @@
-﻿namespace ObjektorienteradAnalysOchDesignAssignment.Models
+﻿using ObjektorienteradAnalysOchDesignAssignment.Interfaces.IAuthor;
+
+namespace ObjektorienteradAnalysOchDesignAssignment.Models
 {
-    public class AuthorModel
+    public class AuthorModel : IAuthorModel
     {
-        public int id { get; set; }
+        public int Id { get; set; }
     }
 }
