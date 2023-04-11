@@ -2,5 +2,6 @@
 {
     public class AuthorModel
     {
+        public int id { get; set; }
     }
 }

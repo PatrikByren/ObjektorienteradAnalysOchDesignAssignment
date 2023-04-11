@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ObjektorienteradAnalysOchDesignAssignment.Models.Entities;
 using ObjektorienteradAnalysOchDesignAssignment.Models.Entity;
 
 namespace ObjektorienteradAnalysOchDesignAssignment.Context
@@ -12,6 +13,7 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Context
         public DbSet<AuthorEntity> Author { get; set; }
         public DbSet<ContentTypeEntity> ContentType { get; set; }
         public DbSet<TagEntity> Tags { get; set; }
+        public DbSet<AuthorArticleRowEntity> AuthorArticleRow { get; set; }
 
     }
 }

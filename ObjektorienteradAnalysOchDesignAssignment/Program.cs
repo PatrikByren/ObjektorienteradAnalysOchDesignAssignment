@@ -2,6 +2,7 @@ using ObjektorienteradAnalysOchDesignAssignment.Repositories;
 using ObjektorienteradAnalysOchDesignAssignment.Services;
 using Microsoft.EntityFrameworkCore;
 using ObjektorienteradAnalysOchDesignAssignment.Context;
+using ObjektorienteradAnalysOchDesignAssignment.Models.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,7 @@ builder.Services.AddScoped<ArticleRepository>();
 builder.Services.AddScoped<AuthorRepository>();
 builder.Services.AddScoped<TagRepository>();
 builder.Services.AddScoped<ContentTypeRepository>();
+builder.Services.AddScoped<AuthorArticleRowRepository>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

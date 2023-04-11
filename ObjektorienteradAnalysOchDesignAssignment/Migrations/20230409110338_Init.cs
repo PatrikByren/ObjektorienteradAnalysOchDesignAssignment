@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ObjektorienteradAnalysOchDesignAssignment.Migrations
 {
     /// <inheritdoc />
-    public partial class Update_db : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,7 +17,8 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(200)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -30,7 +31,7 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Type = table.Column<string>(type: "nvarchar(1000)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -43,7 +44,7 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Tag = table.Column<string>(type: "nvarchar(1000)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -56,12 +57,12 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AuthorId = table.Column<int>(type: "int", nullable: false),
-                    ContentTypeId = table.Column<int>(type: "int", nullable: false),
-                    TagId = table.Column<int>(type: "int", nullable: true),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PublishDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    PublishDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ContentTypeId = table.Column<int>(type: "int", nullable: false),
+                    AuthorArticleRowId = table.Column<int>(type: "int", nullable: false),
+                    TagId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -72,92 +73,78 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Migrations
                         principalTable: "ContentType",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ArticleEntityAuthorEntity",
-                columns: table => new
-                {
-                    ArticlesId = table.Column<int>(type: "int", nullable: false),
-                    AuthorId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ArticleEntityAuthorEntity", x => new { x.ArticlesId, x.AuthorId });
                     table.ForeignKey(
-                        name: "FK_ArticleEntityAuthorEntity_Articles_ArticlesId",
-                        column: x => x.ArticlesId,
-                        principalTable: "Articles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ArticleEntityAuthorEntity_Author_AuthorId",
-                        column: x => x.AuthorId,
-                        principalTable: "Author",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ArticleEntityTagsEntity",
-                columns: table => new
-                {
-                    ArticlesId = table.Column<int>(type: "int", nullable: false),
-                    TagId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ArticleEntityTagsEntity", x => new { x.ArticlesId, x.TagId });
-                    table.ForeignKey(
-                        name: "FK_ArticleEntityTagsEntity_Articles_ArticlesId",
-                        column: x => x.ArticlesId,
-                        principalTable: "Articles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ArticleEntityTagsEntity_Tags_TagId",
+                        name: "FK_Articles_Tags_TagId",
                         column: x => x.TagId,
                         principalTable: "Tags",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_ArticleEntityAuthorEntity_AuthorId",
-                table: "ArticleEntityAuthorEntity",
-                column: "AuthorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ArticleEntityTagsEntity_TagId",
-                table: "ArticleEntityTagsEntity",
-                column: "TagId");
+            migrationBuilder.CreateTable(
+                name: "AuthorArticleRow",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AuthorID = table.Column<int>(type: "int", nullable: false),
+                    ArticleId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AuthorArticleRow", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AuthorArticleRow_Articles_ArticleId",
+                        column: x => x.ArticleId,
+                        principalTable: "Articles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AuthorArticleRow_Author_AuthorID",
+                        column: x => x.AuthorID,
+                        principalTable: "Author",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Articles_ContentTypeId",
                 table: "Articles",
                 column: "ContentTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Articles_TagId",
+                table: "Articles",
+                column: "TagId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AuthorArticleRow_ArticleId",
+                table: "AuthorArticleRow",
+                column: "ArticleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AuthorArticleRow_AuthorID",
+                table: "AuthorArticleRow",
+                column: "AuthorID");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ArticleEntityAuthorEntity");
-
-            migrationBuilder.DropTable(
-                name: "ArticleEntityTagsEntity");
-
-            migrationBuilder.DropTable(
-                name: "Author");
+                name: "AuthorArticleRow");
 
             migrationBuilder.DropTable(
                 name: "Articles");
 
             migrationBuilder.DropTable(
-                name: "Tags");
+                name: "Author");
 
             migrationBuilder.DropTable(
                 name: "ContentType");
+
+            migrationBuilder.DropTable(
+                name: "Tags");
         }
     }
 }

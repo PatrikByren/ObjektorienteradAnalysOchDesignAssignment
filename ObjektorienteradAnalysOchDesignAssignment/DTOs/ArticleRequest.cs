@@ -1,5 +1,6 @@
 ﻿
 using ObjektorienteradAnalysOchDesignAssignment.Factories;
+using ObjektorienteradAnalysOchDesignAssignment.Models;
 using ObjektorienteradAnalysOchDesignAssignment.Models.Entity;
 using System.ComponentModel.DataAnnotations;
 
@@ -10,7 +11,7 @@ namespace ObjektorienteradAnalysOchDesignAssignment.DTOs
         [Required]
         public int ContentTypeId { get; set; }
         [Required]
-        public int AuthorId { get; set; }
+        public ICollection<AuthorModel> Authors { get; set; }
         [Required]
         public int TagId { get; set; }
         [Required]
@@ -29,7 +30,6 @@ namespace ObjektorienteradAnalysOchDesignAssignment.DTOs
             articleEntity.Content = article.Content;
             articleEntity.PublishDate = article.PublishDate;
             articleEntity.ContentTypeId = article.ContentTypeId;
-            articleEntity.AuthorId = article.AuthorId;
             articleEntity.TagId = article.TagId;
             articleEntity.Id = articleEntity.Id;
 

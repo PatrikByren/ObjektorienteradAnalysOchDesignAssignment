@@ -30,11 +30,11 @@ public class ArticleRepository
     }
     public async Task<IEnumerable<ArticleEntity>> GetAllAsync()
     {
-        return await _dataContext.Articles.Include(x =>x.Author).Include(x => x.ContentType).Include(x => x.Tag).ToListAsync();
+        return await _dataContext.Articles.Include(x =>x.AuthorRow).ThenInclude(x => x.Author).Include(x => x.ContentType).Include(x => x.Tag).ToListAsync();
     }
     public async Task<IEnumerable<ArticleEntity>> GetAllAsync(int id)
     {
-        return await _dataContext.Articles.Include(x => x.Author).Include(x => x.ContentType).Include(x => x.Tag).Where(x => x.ContentTypeId == id).ToListAsync();
+        return await _dataContext.Articles.Include(x => x.AuthorRow).ThenInclude(x => x.Author).Include(x => x.ContentType).Include(x => x.Tag).Where(x => x.ContentTypeId == id).ToListAsync();
     }
     public async Task<IActionResult> UpdateAsync(ArticleEntity entity)
     {
@@ -71,6 +71,6 @@ public class ArticleRepository
 
     public async Task<ArticleEntity> GetAsync(int id)
     {
-        return await _dataContext.Articles.Include(x => x.Author).Include(x => x.ContentType).Include(x => x.Tag).FirstOrDefaultAsync(x => x.Id == id) ?? null!;
+        return await _dataContext.Articles.Include(x => x.AuthorRow).ThenInclude(x => x.Author).Include(x => x.ContentType).Include(x => x.Tag).FirstOrDefaultAsync(x => x.Id == id) ?? null!;
     }
 }

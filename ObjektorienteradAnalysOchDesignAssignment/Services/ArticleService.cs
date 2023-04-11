@@ -14,21 +14,25 @@ public class ArticleService
     private readonly TagRepository _tagRepo;
     private readonly AuthorRepository _authorRepo;
     private readonly ContentTypeRepository _contentTypeRepo;
+    private readonly AuthorArticleRowRepository _authorArticleRowRepo;
 
-    public ArticleService(ArticleRepository repo, TagRepository tagRepo, AuthorRepository authorRepo, ContentTypeRepository contentTypeRepo)
+    public ArticleService(ArticleRepository repo, TagRepository tagRepo, AuthorRepository authorRepo, ContentTypeRepository contentTypeRepo, AuthorArticleRowRepository authorArticleRowRepository)
     {
         _articleRepo = repo;
         _tagRepo = tagRepo;
         _authorRepo = authorRepo;
         _contentTypeRepo = contentTypeRepo;
+        _authorArticleRowRepo = authorArticleRowRepository;
     }
 
-    public async Task<ArticleRespons> CreateAsync(ArticleEntity req)
+    public async Task<ArticleRespons> CreateAsync(ArticleRequest req)
     {
-        req.Tag = await _tagRepo.GetOneAsync(req.TagId);
-        req.Author = await _authorRepo.GetOneAsync(req.AuthorId);
-        req.ContentType = await _contentTypeRepo.GetOneAsync(req.ContentTypeId);
+        
         var res = await _articleRepo.SaveAsync(req);
+        res.Tag = await _tagRepo.GetOneAsync(req.TagId);
+        res.ContentType = await _contentTypeRepo.GetOneAsync(req.ContentTypeId);
+        _authorArticleRowRepo.Save(res, req);
+        res.AuthorRow = await _authorRepo.GetOneAsync(req);
 
         return res;
     }
@@ -37,13 +41,15 @@ public class ArticleService
         var article = await _articleRepo.GetAsync(id);
         if (article != null)
         {
+            await _authorArticleRowRepo.UpdateAsync(article, articleToUpdate.Authors);
+
             article.Title = articleToUpdate.Title;
             article.Content = articleToUpdate.Content;
             article.PublishDate = articleToUpdate.PublishDate;
             article.ContentTypeId = articleToUpdate.ContentTypeId;
-            article.AuthorId = articleToUpdate.AuthorId;
             article.TagId = articleToUpdate.TagId;
-            return await _articleRepo.UpdateAsync(article);
+
+            return await _articleRepo.UpdateAsync(article); 
         }
         else { }
         return null!;
@@ -61,7 +67,11 @@ public class ArticleService
         var list = ListFactory.CreateList();
         var result = await _articleRepo.GetAllAsync();
         foreach (var item in result)
-            list.Add(ArticleFactory.CreateArticleRespons(item));
+        {
+            ArticleRespons resp = item;
+            list.Add(resp);
+        }
+
         return list;
     }
     public async Task<IEnumerable<ArticleRespons>> GetAllAsync(int id)
@@ -69,7 +79,10 @@ public class ArticleService
         var list = ListFactory.CreateList();
         var result = await _articleRepo.GetAllAsync(id);
         foreach (var item in result)
-            list.Add(ArticleFactory.CreateArticleRespons(item));
+        {
+            ArticleRespons resp = item;
+            list.Add(resp);
+        }
         return list;
     }
 }

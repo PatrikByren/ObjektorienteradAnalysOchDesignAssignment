@@ -12,8 +12,8 @@ using ObjektorienteradAnalysOchDesignAssignment.Context;
 namespace ObjektorienteradAnalysOchDesignAssignment.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230405070340_Update_db")]
-    partial class Update_db
+    [Migration("20230409140431_Fixed misstakeAgain")]
+    partial class FixedmisstakeAgain
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,37 +25,7 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ArticleEntityAuthorEntity", b =>
-                {
-                    b.Property<int>("ArticlesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ArticlesId", "AuthorId");
-
-                    b.HasIndex("AuthorId");
-
-                    b.ToTable("ArticleEntityAuthorEntity");
-                });
-
-            modelBuilder.Entity("ArticleEntityTagsEntity", b =>
-                {
-                    b.Property<int>("ArticlesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TagId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ArticlesId", "TagId");
-
-                    b.HasIndex("TagId");
-
-                    b.ToTable("ArticleEntityTagsEntity");
-                });
-
-            modelBuilder.Entity("ClassLibrary_Assignment.Models.Entities.ArticleEntity", b =>
+            modelBuilder.Entity("ObjektorienteradAnalysOchDesignAssignment.Models.Entities.AuthorArticleRowEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -63,8 +33,28 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AuthorId")
+                    b.Property<int>("ArticleId")
                         .HasColumnType("int");
+
+                    b.Property<int>("AuthorID")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ArticleId");
+
+                    b.HasIndex("AuthorID");
+
+                    b.ToTable("AuthorArticleRow");
+                });
+
+            modelBuilder.Entity("ObjektorienteradAnalysOchDesignAssignment.Models.Entity.ArticleEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -76,7 +66,7 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Migrations
                     b.Property<DateTime>("PublishDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("TagId")
+                    b.Property<int>("TagId")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -87,10 +77,12 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Migrations
 
                     b.HasIndex("ContentTypeId");
 
+                    b.HasIndex("TagId");
+
                     b.ToTable("Articles");
                 });
 
-            modelBuilder.Entity("ClassLibrary_Assignment.Models.Entities.AuthorEntity", b =>
+            modelBuilder.Entity("ObjektorienteradAnalysOchDesignAssignment.Models.Entity.AuthorEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -100,14 +92,14 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Author");
                 });
 
-            modelBuilder.Entity("ClassLibrary_Assignment.Models.Entities.ContentTypeEntity", b =>
+            modelBuilder.Entity("ObjektorienteradAnalysOchDesignAssignment.Models.Entity.ContentTypeEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -115,16 +107,16 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Type")
+                    b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(1000)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("ContentType");
                 });
 
-            modelBuilder.Entity("ClassLibrary_Assignment.Models.Entities.TagsEntity", b =>
+            modelBuilder.Entity("ObjektorienteradAnalysOchDesignAssignment.Models.Entity.TagEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -132,57 +124,69 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Tag")
+                    b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(1000)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Tags");
                 });
 
-            modelBuilder.Entity("ArticleEntityAuthorEntity", b =>
+            modelBuilder.Entity("ObjektorienteradAnalysOchDesignAssignment.Models.Entities.AuthorArticleRowEntity", b =>
                 {
-                    b.HasOne("ClassLibrary_Assignment.Models.Entities.ArticleEntity", null)
-                        .WithMany()
-                        .HasForeignKey("ArticlesId")
+                    b.HasOne("ObjektorienteradAnalysOchDesignAssignment.Models.Entity.ArticleEntity", "Article")
+                        .WithMany("Author")
+                        .HasForeignKey("ArticleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ClassLibrary_Assignment.Models.Entities.AuthorEntity", null)
-                        .WithMany()
-                        .HasForeignKey("AuthorId")
+                    b.HasOne("ObjektorienteradAnalysOchDesignAssignment.Models.Entity.AuthorEntity", "Author")
+                        .WithMany("Articles")
+                        .HasForeignKey("AuthorID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Article");
+
+                    b.Navigation("Author");
                 });
 
-            modelBuilder.Entity("ArticleEntityTagsEntity", b =>
+            modelBuilder.Entity("ObjektorienteradAnalysOchDesignAssignment.Models.Entity.ArticleEntity", b =>
                 {
-                    b.HasOne("ClassLibrary_Assignment.Models.Entities.ArticleEntity", null)
-                        .WithMany()
-                        .HasForeignKey("ArticlesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ClassLibrary_Assignment.Models.Entities.TagsEntity", null)
-                        .WithMany()
-                        .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ClassLibrary_Assignment.Models.Entities.ArticleEntity", b =>
-                {
-                    b.HasOne("ClassLibrary_Assignment.Models.Entities.ContentTypeEntity", "ContentType")
+                    b.HasOne("ObjektorienteradAnalysOchDesignAssignment.Models.Entity.ContentTypeEntity", "ContentType")
                         .WithMany("Articles")
                         .HasForeignKey("ContentTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ObjektorienteradAnalysOchDesignAssignment.Models.Entity.TagEntity", "Tag")
+                        .WithMany("Articles")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("ContentType");
+
+                    b.Navigation("Tag");
                 });
 
-            modelBuilder.Entity("ClassLibrary_Assignment.Models.Entities.ContentTypeEntity", b =>
+            modelBuilder.Entity("ObjektorienteradAnalysOchDesignAssignment.Models.Entity.ArticleEntity", b =>
+                {
+                    b.Navigation("Author");
+                });
+
+            modelBuilder.Entity("ObjektorienteradAnalysOchDesignAssignment.Models.Entity.AuthorEntity", b =>
+                {
+                    b.Navigation("Articles");
+                });
+
+            modelBuilder.Entity("ObjektorienteradAnalysOchDesignAssignment.Models.Entity.ContentTypeEntity", b =>
+                {
+                    b.Navigation("Articles");
+                });
+
+            modelBuilder.Entity("ObjektorienteradAnalysOchDesignAssignment.Models.Entity.TagEntity", b =>
                 {
                     b.Navigation("Articles");
                 });
