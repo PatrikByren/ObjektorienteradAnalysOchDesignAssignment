@@ -6,9 +6,5 @@ namespace ObjektorienteradAnalysOchDesignAssignment.Factories
     public class AuthorFactory
     {
         public static AuthorRespons CreateAuthorRespons() => new();
-       /* public static AuthorRespons CreateAuthorRespons(string name) => new() 
-        { 
-            Name= name
-        };*/
     }
 }
